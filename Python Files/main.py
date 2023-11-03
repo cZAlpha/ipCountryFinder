@@ -8,11 +8,22 @@ import csv
 import time
 import os
 import ipaddress
+import socket
 # STOP - Imports
 
 
 
 # START - Functions
+def is_valid_ip(ip_str):
+    try:
+        socket.inet_pton(socket.AF_INET, ip_str)  # Check for IPv4 address
+        return True
+    except socket.error:
+        pass
+    return False
+
+
+
 def get_subnet_bounds(subnet):
     try:
         # Parse the subnet using the ipaddress module
@@ -71,7 +82,7 @@ def findCountryName(file_path, country_acronym):  # CSV READER
         print(f"File '{file_path}' not found.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-    return 1  # Returns 1, the flag for an error
+    return 1  # Returns 1, showing that it did not find the country name in the csv file
 
 
 
@@ -104,15 +115,18 @@ def list_files_in_directory(directory):
 
 
 def ipAddressFinder():
-    flag = False  # Flag to check for if the IP was found
-
     print("====================================")
     print("Input IP You Want To Track:")
     ip_address = input("> ")
     print("====================================")
 
-    time.sleep(1.25)
-    makeSpace()  # Makes space
+    if (is_valid_ip(ip_address) == False):  # Error catchinf for invalid IP addresses
+        print("+=====================================+")
+        print("|        Invalid IP Address           |")
+        print("+=====================================+")
+        time.sleep(1.25)
+        makeSpace()  # Makes space
+        return 1  # Error
 
     if (ip_address == "exit" or ip_address == "e"):  # Checks for user exit
         makeSpace()
@@ -132,9 +146,6 @@ def ipAddressFinder():
     makeSpace()  # Makes space
 
     file_path_list = list_files_in_directory(directory)
-    # for loop that iterates over the list called "file_path_list"
-    # where "country" is the loop variable holding the name
-    # of each string index inside "file_path_list"
     for filename in file_path_list:
         if (readCIDR(filename, ip_address) == 0):  # If the IP's subnet is found in the directory of .cidr files
             flag = True  # Flag to check for if the IP was found
@@ -143,12 +154,14 @@ def ipAddressFinder():
             print("+=========================+")
             time.sleep(1)
             makeSpace()  # Makes space
-
             countryAcronym = filename[-7:-5]
             countryName = findCountryName(file_path, countryAcronym)
+            if (countryName == 1):
+                print("ERROR OCCURRED IN findCountryName()")
+                return 1  # Error
             print("+=====================================================================+")
             print("|   IP Address: " + ip_address)
-            print("|   Country Acronym is: " + countryAcronym )
+            print("|   Country Acronym is: " + countryAcronym)
             print("|   Country Name is: " + countryName)
             print("+=====================================================================+")
 # STOP - Functions

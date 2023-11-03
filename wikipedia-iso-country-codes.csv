@@ -25,7 +25,7 @@ Belize,BZ
 Benin,BJ
 Bermuda,BM
 Bhutan,BT
-"Bolivia, Plurinational State of",BO
+Bolivia,BO
 Bosnia and Herzegovina,BA
 Botswana,BW
 Bouvet Island,BV
@@ -45,11 +45,11 @@ Chad,TD
 Chile,CL
 China,CN
 Christmas Island,CX
-Cocos (Keeling) Islands,CC
+Cocos Islands,CC
 Colombia,CO
 Comoros,KM
 Congo,CG
-"Congo, the Democratic Republic of the",CD
+Democratic Republic Of The Congo,CD
 Cook Islands,CK
 Costa Rica,CR
 Côte d'Ivoire,CI
@@ -68,7 +68,7 @@ Equatorial Guinea,GQ
 Eritrea,ER
 Estonia,EE
 Ethiopia,ET
-Falkland Islands (Malvinas),FK
+Falkland Islands,FK
 Faroe Islands,FO
 Fiji,FJ
 Finland,FI
@@ -94,14 +94,14 @@ Guinea-Bissau,GW
 Guyana,GY
 Haiti,HT
 Heard Island and McDonald Islands,HM
-Holy See (Vatican City State),VA
+Vatican City,VA
 Honduras,HN
 Hong Kong,HK
 Hungary,HU
 Iceland,IS
 India,IN
 Indonesia,ID
-"Iran, Islamic Republic of",IR
+Iran,IR
 Iraq,IQ
 Ireland,IE
 Isle of Man,IM
@@ -114,11 +114,11 @@ Jordan,JO
 Kazakhstan,KZ
 Kenya,KE
 Kiribati,KI
-"Korea, Democratic People's Republic of",KP
-"Korea, Republic of",KR
+DPRK,KP
+South Korea,KR
 Kuwait,KW
 Kyrgyzstan,KG
-Lao People's Democratic Republic,LA
+Laos,LA
 Latvia,LV
 Lebanon,LB
 Lesotho,LS
@@ -128,7 +128,7 @@ Liechtenstein,LI
 Lithuania,LT
 Luxembourg,LU
 Macao,MO
-"Macedonia, the former Yugoslav Republic of",MK
+Macedonia,MK
 Madagascar,MG
 Malawi,MW
 Malaysia,MY
@@ -141,8 +141,8 @@ Mauritania,MR
 Mauritius,MU
 Mayotte,YT
 Mexico,MX
-"Micronesia, Federated States of",FM
-"Moldova, Republic of",MD
+Micronesia,FM
+Moldova,MD
 Monaco,MC
 Mongolia,MN
 Montenegro,ME
@@ -167,7 +167,7 @@ Norway,NO
 Oman,OM
 Pakistan,PK
 Palau,PW
-"Palestinian Territory, Occupied",PS
+Occupied Palestine,PS
 Panama,PA
 Papua New Guinea,PG
 Paraguay,PY
@@ -211,6 +211,7 @@ Suriname,SR
 Svalbard and Jan Mayen,SJ
 Swaziland,SZ
 Sweden,SE
+Sint Maarten,SX
 Switzerland,CH
 Syrian Arab Republic,SY
 "Taiwan, Province of China",TW
