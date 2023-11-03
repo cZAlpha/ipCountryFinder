@@ -120,7 +120,7 @@ def ipAddressFinder():
     ip_address = input("> ")
     print("====================================")
 
-    if (is_valid_ip(ip_address) == False):  # Error catchinf for invalid IP addresses
+    if (is_valid_ip(ip_address) == False):  # Error catching for invalid IP addresses
         print("+=====================================+")
         print("|        Invalid IP Address           |")
         print("+=====================================+")
