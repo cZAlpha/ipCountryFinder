@@ -136,7 +136,7 @@ def ipAddressFinder():
         return 0  # Ran fine
 
     directory = """/Users/noah/PycharmProjects/ipCountryFinder/ipCountryFinder/IPAddressData"""
-    file_path = "../wikipedia-iso-country-codes.csv"
+    file_path = "../CountryNamesCSV/wikipedia-iso-country-codes.csv"
     # This function will take an argument of an IPADDRESS as a
     # string and output which country it came from
     print("+=====================================+")
@@ -161,7 +161,7 @@ def ipAddressFinder():
                 return 1  # Error
             print("+=====================================================================+")
             print("|   IP Address: " + ip_address)
-            print("|   Country Acronym is: " + countryAcronym)
+            print("|   Country Acronym is: " + countryAcronym.upper())
             print("|   Country Name is: " + countryName)
             print("+=====================================================================+")
 # STOP - Functions
