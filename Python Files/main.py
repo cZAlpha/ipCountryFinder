@@ -17,11 +17,9 @@ def get_subnet_bounds(subnet):
     try:
         # Parse the subnet using the ipaddress module
         network = ipaddress.ip_network(subnet, strict=False)
-
         # Calculate the lower and upper bounds
         lower_bound = str(network.network_address)
         upper_bound = str(network.broadcast_address)
-
         return lower_bound, upper_bound
 
     except ValueError as e:
@@ -29,13 +27,28 @@ def get_subnet_bounds(subnet):
 
 
 
-def readCIDR(file_path, inputed_ip, flag=True):
+def is_ip_in_subnet(ip, subnet):
+    try:
+        # Parse the subnet using the ipaddress module
+        network = ipaddress.ip_network(subnet, strict=False)
+
+        # Check if the IP address is in the subnet
+        if ipaddress.ip_address(ip) in network:
+            return True
+        else:
+            return False
+    except ValueError as e:
+        return f"Invalid subnet: {str(e)}"
+
+
+
+def readCIDR(file_path, inputed_ip):  # CIDR READER
     try:
         with open(file_path, 'r') as file:
             lines = file.readlines()
             for line in lines:
-                line = line.strip()  # string processing
-                if (line == inputed_ip):
+                subnet = line.strip()  # string processing
+                if (is_ip_in_subnet(inputed_ip, subnet)):
                     return 0
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
@@ -44,7 +57,7 @@ def readCIDR(file_path, inputed_ip, flag=True):
 
 
 
-def findCountryName(file_path, country_acronym):
+def findCountryName(file_path, country_acronym):  # CSV READER
     data_list = []
     try:
         with open(file_path, 'r', newline='') as file:
@@ -52,8 +65,6 @@ def findCountryName(file_path, country_acronym):
             for row in csv_reader:
                 data_list.append(row)
                 countryname = row[0]
-                #print(country_acronym)
-                #print(row[1].lower())
                 if (country_acronym == row[1].lower()):  # If the country is located
                     return countryname
     except FileNotFoundError:
@@ -91,9 +102,10 @@ def list_files_in_directory(directory):
     return file_paths
 
 
-#2.52.0.1
 
 def ipAddressFinder():
+    flag = False  # Flag to check for if the IP was found
+
     print("====================================")
     print("Input IP You Want To Track:")
     ip_address = input("> ")
@@ -103,41 +115,44 @@ def ipAddressFinder():
     makeSpace()  # Makes space
 
     if (ip_address == "exit" or ip_address == "e"):  # Checks for user exit
+        makeSpace()
+        print("+=====================================+")
+        print("|        Closing Program...           |")
+        print("+=====================================+")
         return 0  # Ran fine
 
-    directory = 'C:\\Users\Parents\PycharmProjects\ipCountryFinder\ipCountryFinder\IPAddressData'
-    file_path = "../IPAddressData/wikipedia-iso-country-codes.csv"
+    directory = """/Users/noah/PycharmProjects/ipCountryFinder/ipCountryFinder/IPAddressData"""
+    file_path = "../wikipedia-iso-country-codes.csv"
     # This function will take an argument of an IPADDRESS as a
     # string and output which country it came from
-    print("+======================+")
+    print("+=====================================+")
     print("|        Function is running...       |")
-    print("+======================+")
+    print("+=====================================+")
     time.sleep(0.5)
+    makeSpace()  # Makes space
 
     file_path_list = list_files_in_directory(directory)
     # for loop that iterates over the list called "file_path_list"
     # where "country" is the loop variable holding the name
     # of each string index inside "file_path_list"
-    for country in file_path_list:
-        if (readCIDR(country, ip_address) == 0):
-            countryAcronym = country[-7:-5]
+    for filename in file_path_list:
+        if (readCIDR(filename, ip_address) == 0):  # If the IP's subnet is found in the directory of .cidr files
+            flag = True  # Flag to check for if the IP was found
+            print("+=========================+")
+            print("|  COUNTRY ACRONYM FOUND  |")
+            print("+=========================+")
+            time.sleep(1)
             makeSpace()  # Makes space
-            print("+========================+")
-            print("|  COUNTRY ACRONYM FOUND |")
-            print("+========================+")
-            time.sleep(0.75)
-            makePipe()
-            print("+===================================+")
-            print("|   Country Acronym is: " + countryAcronym )
-            countryName = findCountryName("../IPAddressData/wikipedia-iso-country-codes.csv", countryAcronym)
-            print("|   Country Name is: " + countryName)
-            print("+===================================+")
-        # else:
 
+            countryAcronym = filename[-7:-5]
+            countryName = findCountryName(file_path, countryAcronym)
+            print("+=====================================================================+")
+            print("|   IP Address: " + ip_address)
+            print("|   Country Acronym is: " + countryAcronym )
+            print("|   Country Name is: " + countryName)
+            print("+=====================================================================+")
 # STOP - Functions
 
 
 
-#ipAddressFinder()
-print(get_subnet_bounds("31.41.33.0/24"))
-
+ipAddressFinder()
