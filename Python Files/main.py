@@ -5,18 +5,20 @@
 
 # START - Imports
 import csv
+import time
+import os
 # STOP - Imports
 
 
 
 # START - Functions
-def readCIDR(file_path, inputed_ip, flag = True):
+def readCIDR(file_path, inputed_ip, flag=True):
     try:
         with open(file_path, 'r') as file:
             lines = file.readlines()
             for line in lines:
                 line = line.strip()  # string processing
-                if(line == inputed_ip):
+                if (line == inputed_ip):
                     return 0
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
@@ -24,7 +26,8 @@ def readCIDR(file_path, inputed_ip, flag = True):
         print(f"An error occurred: {str(e)}")
 
 
-def readCSV(file_path, country_acronym):
+
+def findCountryName(file_path, country_acronym):
     data_list = []
     try:
         with open(file_path, 'r', newline='') as file:
@@ -33,37 +36,74 @@ def readCSV(file_path, country_acronym):
                 data_list.append(row)
                 countryname = row[0]
                 #print(country_acronym)
-                print(row[1].lower())
-                if (country_acronym == row[1].lower()):
-                    print(countryname)
-                    return 0
-
+                #print(row[1].lower())
+                if (country_acronym == row[1].lower()):  # If the country is located
+                    return countryname
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
+    return 1  # Returns 1, the flag for an error
 
-    return data_list
+
+
+def makeSpace(numOfLines = 20):
+    # A function that simply prints new line calls to the console,
+    # allowing for more responsive looking console-based GUIs
+    for space in range(0, numOfLines):  # For loop that prints new lines to make space
+        print("\n")
+    return 0
+
+
+
+def makePipe(numOfPipes = 3):
+    # PAUSE
+    for pipes in range(0, numOfPipes):
+        # Pause
+        print("|")
+    return 0
+
+
+
+def list_files_in_directory(directory):
+    file_paths = []
+    for root, directories, files in os.walk(directory):
+        for filename in files:
+            file_path = os.path.join(root, filename)#[-7:-5]
+            file_paths.append(file_path)
+    return file_paths
+
 
 
 def ipAddressFinder(ip_address, file_path):
-    # This function will take an argument of an IPADRESS as a string
-    # and output which country it came from
-    print("Function is running...")
+    directory = 'C:\\Users\Parents\PycharmProjects\ipCountryFinder\ipCountryFinder\IPAddressData'
+    # This function will take an argument of an IPADDRESS as a
+    # string and output which country it came from
+    print("+======================+")
+    print("|        Function is running...       |")
+    print("+======================+")
+    time.sleep(0.5)
 
-    file_path_list = ["ad.cidr", "ae.cidr", "af.cidr"]
-
+    file_path_list = list_files_in_directory(directory)
     # for loop that iterates over the list called "file_path_list"
     # where "country" is the loop variable holding the name
     # of each string index inside of "file_path_list"
     for country in file_path_list:
         if (readCIDR(country, ip_address) == 0):
-            print("Country Acronym is: " + country[0:2])
-        if (readCSV("../IPAddressData/wikipedia-iso-country-codes.csv", country[0:2]) == 0):
-            print("Country Name is:      " )
-
-    print("Done.")
-
+            countryAcronym = country[-7:-5]
+            makeSpace()  # Makes space
+            print("+========================+")
+            print("|  COUNTRY ACRONYM FOUND |")
+            print("+========================+")
+            time.sleep(0.75)
+            makePipe()
+            print("+===================================+")
+            print("|   Country Acronym is: " + countryAcronym )
+            countryName = findCountryName("../IPAddressData/wikipedia-iso-country-codes.csv", countryAcronym)
+            print("|   Country Name is: " + countryName)
+            print("+===================================+")
 # STOP - Functions
+
+
 
 ipAddressFinder("46.172.224.0/19", "../IPAddressData/wikipedia-iso-country-codes.csv")
