@@ -7,11 +7,28 @@
 import csv
 import time
 import os
+import ipaddress
 # STOP - Imports
 
 
 
 # START - Functions
+def get_subnet_bounds(subnet):
+    try:
+        # Parse the subnet using the ipaddress module
+        network = ipaddress.ip_network(subnet, strict=False)
+
+        # Calculate the lower and upper bounds
+        lower_bound = str(network.network_address)
+        upper_bound = str(network.broadcast_address)
+
+        return lower_bound, upper_bound
+
+    except ValueError as e:
+        return f"Invalid subnet: {str(e)}"
+
+
+
 def readCIDR(file_path, inputed_ip, flag=True):
     try:
         with open(file_path, 'r') as file:
@@ -74,9 +91,22 @@ def list_files_in_directory(directory):
     return file_paths
 
 
+#2.52.0.1
 
-def ipAddressFinder(ip_address, file_path):
+def ipAddressFinder():
+    print("====================================")
+    print("Input IP You Want To Track:")
+    ip_address = input("> ")
+    print("====================================")
+
+    time.sleep(1.25)
+    makeSpace()  # Makes space
+
+    if (ip_address == "exit" or ip_address == "e"):  # Checks for user exit
+        return 0  # Ran fine
+
     directory = 'C:\\Users\Parents\PycharmProjects\ipCountryFinder\ipCountryFinder\IPAddressData'
+    file_path = "../IPAddressData/wikipedia-iso-country-codes.csv"
     # This function will take an argument of an IPADDRESS as a
     # string and output which country it came from
     print("+======================+")
@@ -87,7 +117,7 @@ def ipAddressFinder(ip_address, file_path):
     file_path_list = list_files_in_directory(directory)
     # for loop that iterates over the list called "file_path_list"
     # where "country" is the loop variable holding the name
-    # of each string index inside of "file_path_list"
+    # of each string index inside "file_path_list"
     for country in file_path_list:
         if (readCIDR(country, ip_address) == 0):
             countryAcronym = country[-7:-5]
@@ -102,8 +132,12 @@ def ipAddressFinder(ip_address, file_path):
             countryName = findCountryName("../IPAddressData/wikipedia-iso-country-codes.csv", countryAcronym)
             print("|   Country Name is: " + countryName)
             print("+===================================+")
+        # else:
+
 # STOP - Functions
 
 
 
-ipAddressFinder("46.172.224.0/19", "../IPAddressData/wikipedia-iso-country-codes.csv")
+#ipAddressFinder()
+print(get_subnet_bounds("31.41.33.0/24"))
+
