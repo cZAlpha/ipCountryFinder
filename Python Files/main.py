@@ -5,15 +5,71 @@
 
 # START - Imports
 import csv
-import time
 import os
 import ipaddress
 import socket
+import sys
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
 # STOP - Imports
+
+
+# START - GUI Class
+class MacStyleGUI(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle('IP Country Finder')
+        self.setGeometry(100, 100, 400, 250)
+
+        layout = QVBoxLayout()
+
+        self.label1 = QLabel('Enter the Public IPv4 Address You Would Like to Track:')
+        self.label1.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(self.label1)
+
+        self.input_box = QLineEdit()
+        layout.addWidget(self.input_box)
+
+        self.button = QPushButton('Track')
+        layout.addWidget(self.button)
+        self.button.clicked.connect(self.on_submit)
+
+        self.label2 = QLabel("")  # Second label for user input
+        layout.addWidget(self.label2)
+
+        sadpepe = QPixmap("../Images/sadpepe.png")
+        self.image_label = QLabel()
+        self.image_label.setPixmap(sadpepe)
+        layout.addWidget(self.image_label)
+
+        self.setLayout(layout)
+
+    def on_submit(self):
+        grinningpepe = QPixmap("../Images/grinningpepe.png")
+        sadpepe = QPixmap("../Images/sadpepe.png")
+        user_input = self.input_box.text()
+        countryName = ipAddressFinderGUI(user_input).strip()
+        self.label2.setText(f"IP Address' Country: {countryName}")
+        if (countryName == "Invalid IP Address" or countryName == "Invalid IP Address" or countryName == "An Error Has Occurred."):
+            self.image_label.setPixmap(sadpepe)
+        self.image_label.setPixmap(grinningpepe)
+# STOP  - GUI Class
 
 
 
 # START - Functions
+def openGUI():
+    app = QApplication(sys.argv)
+    window = MacStyleGUI()
+    window.show()
+    sys.exit(app.exec_())
+
+
+
 def is_valid_ip(ip_str):
     try:
         socket.inet_pton(socket.AF_INET, ip_str)  # Check for IPv4 address
@@ -86,7 +142,7 @@ def findCountryName(file_path, country_acronym):  # CSV READER
 
 
 
-def makeSpace(numOfLines = 20):
+def makeSpace(numOfLines=20):
     # A function that simply prints new line calls to the console,
     # allowing for more responsive looking console-based GUIs
     for space in range(0, numOfLines):  # For loop that prints new lines to make space
@@ -95,7 +151,7 @@ def makeSpace(numOfLines = 20):
 
 
 
-def makePipe(numOfPipes = 3):
+def makePipe(numOfPipes=3):
     # PAUSE
     for pipes in range(0, numOfPipes):
         # Pause
@@ -108,64 +164,41 @@ def list_files_in_directory(directory):
     file_paths = []
     for root, directories, files in os.walk(directory):
         for filename in files:
-            file_path = os.path.join(root, filename)#[-7:-5]
+            file_path = os.path.join(root, filename)  # [-7:-5]
             file_paths.append(file_path)
     return file_paths
 
 
 
-def ipAddressFinder():
-    print("====================================")
-    print("Input IP You Want To Track:")
-    ip_address = input("> ")
-    print("====================================")
-
-    if (is_valid_ip(ip_address) == False):  # Error catching for invalid IP addresses
-        print("+=====================================+")
-        print("|        Invalid IP Address           |")
-        print("+=====================================+")
-        time.sleep(1.25)
-        makeSpace()  # Makes space
-        return 1  # Error
-
-    if (ip_address == "exit" or ip_address == "e"):  # Checks for user exit
-        makeSpace()
-        print("+=====================================+")
-        print("|        Closing Program...           |")
-        print("+=====================================+")
-        return 0  # Ran fine
-
+def ipAddressFinderGUI(ip_address):
+    # Init. Vars
     directory = """/Users/noah/PycharmProjects/ipCountryFinder/ipCountryFinder/IPAddressData"""
     file_path = "../CountryNamesCSV/wikipedia-iso-country-codes.csv"
-    # This function will take an argument of an IPADDRESS as a
-    # string and output which country it came from
-    print("+=====================================+")
-    print("|        Function is running...       |")
-    print("+=====================================+")
-    time.sleep(0.5)
-    makeSpace()  # Makes space
+
+    if (is_valid_ip(ip_address) == False):  # Error catching for invalid IP addresses
+        return "Invalid IP Address"
 
     file_path_list = list_files_in_directory(directory)
     for filename in file_path_list:
         if (readCIDR(filename, ip_address) == 0):  # If the IP's subnet is found in the directory of .cidr files
-            flag = True  # Flag to check for if the IP was found
-            print("+=========================+")
-            print("|  COUNTRY ACRONYM FOUND  |")
-            print("+=========================+")
-            time.sleep(1)
-            makeSpace()  # Makes space
             countryAcronym = filename[-7:-5]
             countryName = findCountryName(file_path, countryAcronym)
             if (countryName == 1):
                 print("ERROR OCCURRED IN findCountryName()")
-                return 1  # Error
-            print("+=====================================================================+")
-            print("|   IP Address: " + ip_address)
-            print("|   Country Acronym is: " + countryAcronym.upper())
-            print("|   Country Name is: " + countryName)
-            print("+=====================================================================+")
+                return "An Error Has Occurred."  # Error
+    if (countryName != None):
+        return countryName
+    return "An Error Has Occurred."  # Error
 # STOP - Functions
 
 
 
-ipAddressFinder()
+# START - Main
+def main():
+    print("IP Country Finder")
+    openGUI()
+# STOP  - Main
+
+
+if (__name__ == "__main__"):
+    main()  # Runs the GUI
