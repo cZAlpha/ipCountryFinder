@@ -46,7 +46,7 @@ class MacStyleGUI(QWidget):
         self.label2 = QLabel("")  # Second label for user input
         layout.addWidget(self.label2)
 
-        sadpepe = QPixmap("../Images/sadpepe.png")
+        sadpepe = QPixmap("../Images/blankFace.svg")
         self.image_label = QLabel()
         self.image_label.setPixmap(sadpepe)
         layout.addWidget(self.image_label)
@@ -54,12 +54,12 @@ class MacStyleGUI(QWidget):
         self.setLayout(layout)
 
     def on_submit(self):
-        grinningpepe = QPixmap("../Images/grinningpepe.png")
-        sadpepe = QPixmap("../Images/sadpepe.png")
+        grinningpepe = QPixmap("../Images/smileyFace.svg")
+        sadpepe = QPixmap("../Images/frowningFace.svg")
         user_input = self.input_box.text()
         countryName = ipAddressFinderGUI(user_input).strip()
         self.label2.setText(f"IP Address' Country: {countryName}")
-        if (countryName == "Invalid IP Address" or countryName == "Invalid IP Address" or countryName == "An Error Has Occurred."):
+        if (countryName == "Invalid IP Address" or countryName == "Invalid IP Address" or countryName == "An Error Has Occurred." or countryName == "Invalid Input, Try Again"):
             self.image_label.setPixmap(sadpepe)
         else:
             self.image_label.setPixmap(grinningpepe)
@@ -119,7 +119,6 @@ def findCountryName(country_acronym):
 # START - Main
 def main():
     print("IP Country Finder")
-    print(findCountryName("HU"))
     openGUI()
 # STOP  - Main
 
