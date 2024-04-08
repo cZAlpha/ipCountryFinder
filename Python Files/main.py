@@ -12,6 +12,11 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
+
+import socket
+import requests
+from ip2geotools.databases.noncommercial import DbIpCity
+from geopy.distance import distance
 # STOP - Imports
 
 
@@ -70,59 +75,35 @@ def openGUI():
     sys.exit(app.exec_())
 
 
-
-def is_valid_ip(ip_str):
-    try:
-        socket.inet_pton(socket.AF_INET, ip_str)  # Check for IPv4 address
-        return True
-    except socket.error:
-        pass
-    return False
-
+# TO DO:
+# 1 - Make a function called "isIPValid(ip)" that checks if an IP is valid before
+#     running the "ipAddressFinderGUI()" function
+#
+# 2 - Make a function to do the same thing for URLs
+#
+# 3 - Add try, catch exception/error catches in all major functions to ensure cohesion
 
 
-def get_subnet_bounds(subnet):
-    try:
-        # Parse the subnet using the ipaddress module
-        network = ipaddress.ip_network(subnet, strict=False)
-        # Calculate the lower and upper bounds
-        lower_bound = str(network.network_address)
-        upper_bound = str(network.broadcast_address)
-        return lower_bound, upper_bound
-
-    except ValueError as e:
-        return f"Invalid subnet: {str(e)}"
+def isIPValid(ip):
+    return all(char.isdigit() or char == '.' for char in ip)
 
 
-
-def is_ip_in_subnet(ip, subnet):
-    try:
-        # Parse the subnet using the ipaddress module
-        network = ipaddress.ip_network(subnet, strict=False)
-
-        # Check if the IP address is in the subnet
-        if ipaddress.ip_address(ip) in network:
-            return True
-        else:
-            return False
-    except ValueError as e:
-        return f"Invalid subnet: {str(e)}"
+def ipAddressFinderGUI(ip):
+    country_name = None
+    if ( isIPValid(ip) ): # Checks if IP is valid
+        res = DbIpCity.get(ip, api_key="free")
+        print(f"IP Address: {res.ip_address}")
+        print(f"Location: {res.city}, {res.region}, {res.country}")
+        print(f"Coordinates: (Lat: {res.latitude}, Lng: {res.longitude})")
+        country_name = f"{res.country}"
+    else:
+        country_name = "Invalid Input, Try Again"
+    return country_name
 
 
-
-def readCIDR(file_path, inputed_ip):  # CIDR READER
-    try:
-        with open(file_path, 'r') as file:
-            lines = file.readlines()
-            for line in lines:
-                subnet = line.strip()  # string processing
-                if (is_ip_in_subnet(inputed_ip, subnet)):
-                    return 0
-    except FileNotFoundError:
-        print(f"File '{file_path}' not found.")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-
+def findCountryFromURL(url):
+    ip_add = socket.gethostbyname(url)
+    country_name = ipAddressFinderGUI(ip_add)
 
 
 def findCountryName(file_path, country_acronym):  # CSV READER
@@ -141,56 +122,6 @@ def findCountryName(file_path, country_acronym):  # CSV READER
         print(f"An error occurred: {str(e)}")
     return 1  # Returns 1, showing that it did not find the country name in the csv file
 
-
-
-def makeSpace(numOfLines=20):
-    # A function that simply prints new line calls to the console,
-    # allowing for more responsive looking console-based GUIs
-    for space in range(0, numOfLines):  # For loop that prints new lines to make space
-        print("\n")
-    return 0
-
-
-
-def makePipe(numOfPipes=3):
-    # PAUSE
-    for pipes in range(0, numOfPipes):
-        # Pause
-        print("|")
-    return 0
-
-
-
-def list_files_in_directory(directory):
-    file_paths = []
-    for root, directories, files in os.walk(directory):
-        for filename in files:
-            file_path = os.path.join(root, filename)  # [-7:-5]
-            file_paths.append(file_path)
-    return file_paths
-
-
-
-def ipAddressFinderGUI(ip_address):
-    # Init. Vars
-    directory = "../IPAddressData"
-    file_path = "../CountryNamesCSV/wikipedia-iso-country-codes.csv"
-
-    if (is_valid_ip(ip_address) == False):  # Error catching for invalid IP addresses
-        return "Invalid IP Address"
-
-    file_path_list = list_files_in_directory(directory)
-    countryName = None
-    for filename in file_path_list:
-        if (readCIDR(filename, ip_address) == 0):  # If the IP's subnet is found in the directory of .cidr files
-            countryAcronym = filename[-7:-5]
-            countryName = findCountryName(file_path, countryAcronym)
-            if (countryName == 1):
-                print("ERROR OCCURRED IN findCountryName()")
-                return "An Error Has Occurred."  # Error
-    if (countryName != None):
-        return countryName
-    return "An Error Has Occurred."  # Error
 # STOP - Functions
 
 
