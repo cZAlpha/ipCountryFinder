@@ -56,7 +56,8 @@ class MacStyleGUI(QWidget):
         self.label2.setText(f"IP Address' Country: {countryName}")
         if (countryName == "Invalid IP Address" or countryName == "Invalid IP Address" or countryName == "An Error Has Occurred."):
             self.image_label.setPixmap(sadpepe)
-        self.image_label.setPixmap(grinningpepe)
+        else:
+            self.image_label.setPixmap(grinningpepe)
 # STOP  - GUI Class
 
 
@@ -172,13 +173,14 @@ def list_files_in_directory(directory):
 
 def ipAddressFinderGUI(ip_address):
     # Init. Vars
-    directory = """/Users/noah/PycharmProjects/ipCountryFinder/ipCountryFinder/IPAddressData"""
+    directory = "../IPAddressData"
     file_path = "../CountryNamesCSV/wikipedia-iso-country-codes.csv"
 
     if (is_valid_ip(ip_address) == False):  # Error catching for invalid IP addresses
         return "Invalid IP Address"
 
     file_path_list = list_files_in_directory(directory)
+    countryName = None
     for filename in file_path_list:
         if (readCIDR(filename, ip_address) == 0):  # If the IP's subnet is found in the directory of .cidr files
             countryAcronym = filename[-7:-5]
