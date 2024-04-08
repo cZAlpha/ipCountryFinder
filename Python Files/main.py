@@ -75,15 +75,6 @@ def openGUI():
     sys.exit(app.exec_())
 
 
-# TO DO:
-# 1 - Make a function called "isIPValid(ip)" that checks if an IP is valid before
-#     running the "ipAddressFinderGUI()" function
-#
-# 2 - Make a function to do the same thing for URLs
-#
-# 3 - Add try, catch exception/error catches in all major functions to ensure cohesion
-
-
 def isIPValid(ip):
     return all(char.isdigit() or char == '.' for char in ip)
 
@@ -96,9 +87,10 @@ def ipAddressFinderGUI(ip):
         print(f"Location: {res.city}, {res.region}, {res.country}")
         print(f"Coordinates: (Lat: {res.latitude}, Lng: {res.longitude})")
         country_name = f"{res.country}"
+        full_country_name = findCountryName(country_name)
     else:
-        country_name = "Invalid Input, Try Again"
-    return country_name
+        full_country_name = "Invalid Input, Try Again"
+    return full_country_name
 
 
 def findCountryFromURL(url):
@@ -106,22 +98,20 @@ def findCountryFromURL(url):
     country_name = ipAddressFinderGUI(ip_add)
 
 
-def findCountryName(file_path, country_acronym):  # CSV READER
-    data_list = []
+def findCountryName(country_acronym):
+    file_path = "../CountryNames/wikipedia-iso-country-codes.csv"
     try:
-        with open(file_path, 'r', newline='') as file:
+        with open(file_path, 'r', newline='', encoding='utf-8') as file:
             csv_reader = csv.reader(file)
             for row in csv_reader:
-                data_list.append(row)
-                countryname = row[0]
-                if (country_acronym == row[1].lower()):  # If the country is located
-                    return countryname
+                # Check if acronym matches (case-insensitive)
+                if country_acronym.lower() == row[1].strip().lower():
+                    return row[0].strip()  # Return country name (strip to remove whitespace)
     except FileNotFoundError:
         print(f"File '{file_path}' not found.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-    return 1  # Returns 1, showing that it did not find the country name in the csv file
-
+    return None  # Return None if country name not found
 # STOP - Functions
 
 
@@ -129,6 +119,7 @@ def findCountryName(file_path, country_acronym):  # CSV READER
 # START - Main
 def main():
     print("IP Country Finder")
+    print(findCountryName("HU"))
     openGUI()
 # STOP  - Main
 
